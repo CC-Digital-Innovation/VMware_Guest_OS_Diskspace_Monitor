@@ -1,8 +1,14 @@
 ; Example config.ini file, rename to config.ini and update settings below
 
+; [General]
+version=0.4.0
+
 ; Environment
 [Environment]
+; Customer or environment name
 envname=TEST
+; Cycle time in seconds
+cycletime=60
 
 ; VMware settings
 [VMware]
@@ -43,3 +49,8 @@ InformationPreference=Continue
 ; Syslog
 SyslogServer=logs.foo.bar
 SyslogPort=514
+
+; Windows service info, required for nssm-helper.ps1
+[NSSM]
+$serviceName = 'SERVICE_NAME'
+$scriptPath = 'X:/path/to/check_diskspace.ps1'
