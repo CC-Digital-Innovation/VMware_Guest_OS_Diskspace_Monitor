@@ -14,16 +14,17 @@
 #>
 
 
-#---------------------------------------[Declarations]------------------------------------
+#---------------------------------------[Initializations]---------------------------------
+
+
+# Read config paramaters from config.ini file using PsIni
+$CONFIG = Get-IniContent "config.ini"
 
 # Script Version
 $ScriptVersion = "0.0.4"
 
 
-#---------------------------------------[Initialisations]----------------------------------
-
-# Read config paramaters from config.ini file using PsIni
-$CONFIG = Get-IniContent "config.ini"
+#---------------------------------------[Declarations]------------------------------------
 
 # Environment
 $nssm = (Get-Command nssm).Source

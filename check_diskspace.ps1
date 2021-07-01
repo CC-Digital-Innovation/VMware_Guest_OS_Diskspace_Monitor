@@ -14,17 +14,16 @@
 #>
 
 
-#---------------------------------------[Declarations]------------------------------------
-
-
-# Script Version
-$ScriptVersion = "0.0.4"
-
-
-#---------------------------------------[Initialisations]----------------------------------
+#---------------------------------------[Initializations]---------------------------------
 
 # Read config paramaters from config.ini file using PsIni
 $CONFIG = Get-IniContent "config.ini"
+
+# Script Version
+$RelaseVersion = $CONFIG["Environment"]["release"]
+
+
+#---------------------------------------[Declarations]------------------------------------
 
 # Environment
 $envname = $CONFIG["Environment"]["envname"]
@@ -69,7 +68,7 @@ Function Opsgenie_Alert($message,$alias) {
   # Declare an empty array
   $responders = @()
   # Add items to responders array
-  Foreach ($responder in $ResponderItems) {
+  foreach ($responder in $ResponderItems) {
     $responders += @{
         name = $responder
         type = "team"
@@ -81,7 +80,7 @@ Function Opsgenie_Alert($message,$alias) {
   # Declare an empty array
   $tags = @()
   # Add items to tags array
-  Foreach ($tag in $tagItems) {
+  foreach ($tag in $tagItems) {
     $tags += @(
       $tag
     )
@@ -118,11 +117,9 @@ Function Syslog($envname,$source,$message,$sev) {
 
 #---------------------------------------[Execution]---------------------------------------
 
-Import-Module PsIni
-Import-Module VMware.VimAutomation.Core
 
 Write-Information "Connecting to vCenter..."
-$connection = Connect-VIServer -Server $vcserver -User $vcuser -Password $vcpassword
+$connection = Connect-VIServer -Server $vcserver -User $vcuser -Password $vcpassword -InvalidCertificateAction Ignore -Confirm:$false
 
 if ($connection.IsConnected -eq 'True'){$connection}
 else {
@@ -152,6 +149,7 @@ while($true) {
               Write-Warning ("Alert Alias: " + $alias)
               Syslog $envname $output.VM $message Alert
               # Opsgenie_Alert $message $alias
+              # $output | Format-Table VM,Path,Capacity,UsedSpace,FreeSpace,PercentageFreeSpace
           }
       }
     }

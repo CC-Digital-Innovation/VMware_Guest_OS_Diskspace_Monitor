@@ -1,0 +1,76 @@
+#requires -version 2
+<#
+.SYNOPSIS
+  Script to install requirements
+.DESCRIPTION
+  Installs requirements
+.INPUTS
+  None
+.NOTES
+  Version:        0.4.0
+  Author:         Rich Bocchinfuso
+  Creation Date:  06/29/2021
+  Purpose/Change: Initial script development to monitor and alert on VM guest volume free space
+#>
+
+# Start-Process Powershell -Verb RunAs
+# Set-ExecutionPolicy Unrestricted -Force
+# Get-ExecutionPolicy
+
+#---------------------------------------[Initializations]---------------------------------
+
+# Read config paramaters from config.ini file using PsIni
+$CONFIG = Get-IniContent "c:\VMware_Guest_OS_Diskspace_Monitor\config.ini"
+
+# Script Version
+$RelaseVersion = $CONFIG["Environment"]["release"]
+
+
+#---------------------------------------[Declarations]------------------------------------
+
+$modules = $CONFIG["Powershell"]["modules"]
+
+#---------------------------------------[Functions]---------------------------------------
+
+function InstallModules {
+  $ModuleArray = $modules.Split(",")
+  $ModuleArray
+  foreach ($psm in $ModuleArray) {
+    if (Get-Module -ListAvailable -Name $psm) {
+      Write-Host ($psm + " is already installed")
+    } 
+    else {
+      try {
+          Install-Module -Name $psm -AllowClobber -Confirm:$False -Force  
+      }
+      catch [Exception] {
+          $_.message 
+          exit
+      }
+    } 
+  }
+}
+
+
+#---------------------------------------[Execution]---------------------------------------
+
+
+# Check to see if you are running as Administator, if not elevate privledge
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))  
+{  
+  $arguments = "& '" +$myinvocation.mycommand.definition + "'"
+  Start-Process powershell -Verb runAs -ArgumentList $arguments
+  Break
+}
+
+
+Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
+
+InstallModules
+
+# Install Chocolaty and NSSM
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+& choco install nssm --confirm
+
+Set-PowerCLIConfiguration -ParticipateInCEIP $false -Force
+Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false -Force

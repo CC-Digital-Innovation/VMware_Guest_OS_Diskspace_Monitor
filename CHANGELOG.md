@@ -5,6 +5,9 @@
 ## [Unreleased]
 
 - TODO
+  - Config parameters to enable | disable functions
+  - Report function
+  - Email function
 
 
 ## [0.4.0] - 2021-07-01
@@ -13,7 +16,7 @@
 
 - Cycle time and loop to prepare for service creation
 - nssm-helper.ps1 to simplify service creation
-
+- requirement.ps1 to install all requirements
 
 ## [0.3.0] - 2021-06-30
 

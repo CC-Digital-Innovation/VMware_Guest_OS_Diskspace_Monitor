@@ -54,3 +54,7 @@ SyslogPort=514
 [NSSM]
 $serviceName = 'SERVICE_NAME'
 $scriptPath = 'X:/path/to/check_diskspace.ps1'
+
+; Powershell Modules
+[Powershell]
+modules = VMware.PowerCLI,PsIni,Posh-SYSLOG,PSWriteHTML,Emailimo

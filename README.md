@@ -8,6 +8,7 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
 - [VMware.PowerCLI](https://www.powershellgallery.com/packages/VMware.PowerCLI/12.3.0.17860403)
 - [PsIni](https://www.powershellgallery.com/packages/PsIni/3.1.2)
 - [Posh-Syslog](https://www.powershellgallery.com/packages/Posh-SYSLOG/4.1.5)
+- [Chocolatey](https://chocolatey.org/)
 - [NSSM](https://nssm.cc/download)
 
 ## Installation
@@ -24,15 +25,23 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
 
 ## Usage
 
+- Install Requirements from Powershell command prompt
+
+    ```Powershell
+    Start-Process Powershell -Verb RunAs
+    Set-ExecutionPolicy Unrestricted -Force
+    .\requirements.ps1
+    ```
+
 - From Powershell command prompt
 
-    ```sh
+    ```Powershell
     ./check_diskspace.ps1
     ```
 
 - From Windows command prompt or from task scheduler
 
-    ```sh
+    ```Powershell
     start powershell "& "./check_diskspace.ps1"
     ```
 
