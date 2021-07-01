@@ -36,6 +36,14 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
     start powershell "& "./check_diskspace.ps1"
     ```
 
+- Install as Windows service using nssm-helper.ps1
+
+    _Note: Be sure to update the NSSM sevicename and scriptpath in the config.ini_
+
+    ```sh
+    ./nssm_helper.ps1
+    ```
+
 ## Compatibility
 
 This is was built and tested on Windows 10 with Powershell Version 5.1.19041.1023, but most likely work on any Windows system with Powershell >= Version 2.
