@@ -36,7 +36,7 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
 - From Powershell command prompt
 
     ```Powershell
-    ./check_diskspace.ps1
+    .\check_diskspace.ps1
     ```
 
 - From Windows command prompt or from task scheduler
@@ -50,7 +50,7 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
     _Note: Be sure to update the NSSM sevicename and scriptpath in the config.ini_
 
     ```sh
-    ./nssm_helper.ps1
+    .\nssm_helper.ps1
     ```
 
 ## Compatibility
