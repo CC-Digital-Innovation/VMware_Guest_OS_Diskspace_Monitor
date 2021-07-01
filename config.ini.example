@@ -1,0 +1,45 @@
+; Example config.ini file, rename to config.ini and update settings below
+
+; Environment
+[Environment]
+envname=TEST
+
+; VMware settings
+[VMware]
+vcserver=IP or HOSTNAME
+vcuser=user@vsphere.local
+vcpassword=PASSWORD
+
+; Alert thresholds
+[Thresholds]
+; Numeric value is a percentage
+PercentFreeSpace=20
+
+; Opsgenie settings
+[Opsgenie]
+api=OPSGENIE_API_KEY
+URI=https://api.opsgenie.com/v2/alerts
+; Comma separated list of responder teams
+responders=team1,team2
+; Comma separated list of tags
+tags=test,vmware
+priority=P2
+
+; Logging
+[Logging]
+; Local console logging
+; Accepted values: Suspend, Ignore, Inquire, Continue, Stop, SilentlyContinue
+; Continue display the message and continues executing the command. Continue is the default.
+; Ignore suppresses the message and continues executing the command. Unlike SilentlyContinue, Ignore doesn't add the message to the $Error automatic variable. The Ignore value is introduced in PowerShell 3.0.
+; Inquire displays the message and prompts you for confirmation before continuing execution. This value is rarely used.
+; SilentlyContinue suppresses the message and continues executing the command.
+; Stop displays the message and stops executing the command.
+; Suspend is only available for workflows which aren't supported in PowerShell 6 and beyond.
+VerbosePreference=Continue
+DebugPreference=Continue
+ErrorActionPreference=Continue
+WarningPreference=Continue
+InformationPreference=Continue
+; Syslog
+SyslogServer=logs.foo.bar
+SyslogPort=514

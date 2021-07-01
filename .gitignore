@@ -1,0 +1,11 @@
+# ignore ini config files
+*.ini
+# ignore log files
+*.log
+# ignore backup files
+*.bak*
+*.backup
+# ignore data directory
+data/
+# ignore commit.bat
+commit.bat
