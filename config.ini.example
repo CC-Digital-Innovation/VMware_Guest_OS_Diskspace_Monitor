@@ -12,7 +12,7 @@ cycletime=60
 
 ; VMware settings
 [VMware]
-vcserver=IP or HOSTNAME
+vcservers=IP or HOSTNAME,IP or HOSTNAME,IP or HOSTNAME
 vcuser=user@vsphere.local
 vcpassword=PASSWORD
 

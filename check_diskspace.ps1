@@ -16,8 +16,8 @@
 
 #---------------------------------------[Initializations]---------------------------------
 
-# Debug logging
-Start-Transcript -path C:\VMware_Guest_OS_Diskspace_Monitor\output.log -append
+# Start logging for debugging
+Start-Transcript -path C:\VMware_Guest_OS_Diskspace_Monitor\output.log -append 
 
 # Read config paramaters from config.ini file using PsIni
 $CONFIG = Get-IniContent "C:\VMware_Guest_OS_Diskspace_Monitor\config.ini"
@@ -35,7 +35,7 @@ $envname = $CONFIG["Environment"]["envname"]
 $cycletime = $CONFIG["Environment"]["cycletime"]
 
 # vCenter settings
-$vcserver = $CONFIG["VMware"]["vcserver"]
+$vcservers = $CONFIG["VMware"]["vcservers"]
 $vcuser = $CONFIG["VMware"]["vcuser"]
 $vcpassword = $CONFIG["VMware"]["vcpassword"]
 
@@ -62,7 +62,6 @@ $SyslogPort = $CONFIG["Logging"]["SyslogPort"]
 
 
 #---------------------------------------[Functions]---------------------------------------
-
 
 Function Opsgenie_Alert($message,$alias) {
 
@@ -118,19 +117,19 @@ Function Syslog($envname,$source,$message,$sev) {
   Send-Syslogmessage -Server $SyslogServer -Port $SyslogPort -Message $message -Severity $sev -Facility user -Hostname $envname -ApplicationName $source -Transport UDP
 }
 
-#---------------------------------------[Execution]---------------------------------------
 
+Function vCenter_Connect ($vc) {
+  Write-Information "Connecting to vCenter..."
+  $connection = Connect-VIServer -Server $vc -User $vcuser -Password $vcpassword
 
-Write-Information "Connecting to vCenter..."
-$connection = Connect-VIServer -Server $vcserver -User $vcuser -Password $vcpassword
-
-if ($connection.IsConnected -eq 'True'){$connection}
-else {
-	Write-Error "*** Exitting - connection to the server does NOT exist ***"
-	exit
+  if ($connection.IsConnected -eq 'True'){$connection}
+  else {
+    Write-Error "*** Exitting - connection to the server does NOT exist ***"
+    exit
+  }  
 }
 
-while($true) {
+Function VM_diskspace {
   # Get-VM -Name vcsa-vlab | ForEach-Object {
   Get-VM | ForEach-Object {
 
@@ -151,15 +150,27 @@ while($true) {
               Write-Warning ("ALERT: " + $message)
               Write-Warning ("Alert Alias: " + $alias)
               Syslog $envname $output.VM $message Alert
-              # Opsgenie_Alert $message $alias
+              Opsgenie_Alert $message $alias
               $output | Format-Table VM,Path,Capacity_GB,UsedSpace_GB,FreeSpace_GB,PercentageFreeSpace
           }
       }
     }
   }
-  Start-Sleep $cycletime
 }
 
-Disconnect-VIServer -Server $vcserver -confirm:$false
 
+#---------------------------------------[Execution]---------------------------------------
+
+while($true) {
+ # Read and split vCenter servers from config.ini
+  $vcItems = $vcservers.Split(",")
+  # Loop through vCenter servers
+  foreach ($vc in $vcItems) {
+    vCenter_Connect $vc
+    VM_diskspace
+    Disconnect-VIServer -Server $vc -confirm:$false
+  }
+}
+
+# For debugging
 Stop-Transcript

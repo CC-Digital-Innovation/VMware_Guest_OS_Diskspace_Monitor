@@ -14,6 +14,7 @@
 ### Added
 
 - Logging to output.log for debugging
+- Added logic for multiple vCenter connections
 
 
 ### Fixed
