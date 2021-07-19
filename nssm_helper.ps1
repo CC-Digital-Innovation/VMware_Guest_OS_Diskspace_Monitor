@@ -1,13 +1,13 @@
 #requires -version 2
 <#
 .SYNOPSIS
-  Helper script to create service
+  Helper script to create Windows service
 .DESCRIPTION
-  Creates and starts windows service
+  Creates and starts Windows service
 .INPUTS
   ini file
 .NOTES
-  Version:        0.4.0
+  Version:        0.5.0
   Author:         Rich Bocchinfuso
   Creation Date:  06/29/2021
   Purpose/Change: Helper script to create windows servcie
@@ -18,10 +18,10 @@
 
 
 # Read config paramaters from config.ini file using PsIni
-$CONFIG = Get-IniContent "config.ini"
+$CONFIG = Get-IniContent "C:\VMware_Guest_OS_Diskspace_Monitor\config.ini"
 
 # Script Version
-$ScriptVersion = "0.0.4"
+$RelaseVersion = $CONFIG["Environment"]["release"]
 
 
 #---------------------------------------[Declarations]------------------------------------

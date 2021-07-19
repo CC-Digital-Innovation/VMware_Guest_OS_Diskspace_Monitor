@@ -29,7 +29,9 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
 
     ```Powershell
     Start-Process Powershell -Verb RunAs
-    Set-ExecutionPolicy Unrestricted -Force
+    Set-ExecutionPolicy -Confirm:$false Unrestricted -Force
+    Get-ExecutionPolicy
+    Install-Module -Confirm:$false -Name PsIni
     .\requirements.ps1
     ```
 
@@ -39,19 +41,24 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
     .\check_diskspace.ps1
     ```
 
-- From Windows command prompt or from task scheduler
-
-    ```Powershell
-    start powershell "& "./check_diskspace.ps1"
-    ```
-
 - Install as Windows service using nssm_helper.ps1
 
     _Note: Be sure to update the NSSM sevicename and scriptpath in the config.ini_
 
-    ```sh
+    ```Powershell
     .\nssm_helper.ps1
     ```
+    _Note:  You will need to update the service to run as a user with admin privledge._
+
+
+- From Windows command prompt or from task scheduler
+
+    _Note: Running as a service is preferred, if you want to run as a scheduled task, you will need to modify the code to remove the while loop. I may update this to happen automatically in a future release depending on a config.ini setting.
+    ```Powershell
+    start powershell "& "./check_diskspace.ps1"
+    ```
+
+
 
 ## Compatibility
 

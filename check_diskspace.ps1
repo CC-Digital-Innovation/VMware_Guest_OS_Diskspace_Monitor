@@ -7,7 +7,7 @@
 .INPUTS
   ini file
 .NOTES
-  Version:        0.4.0
+  Version:        0.5.0
   Author:         Rich Bocchinfuso
   Creation Date:  06/29/2021
   Purpose/Change: Initial script development to monitor and alert on VM guest volume free space
@@ -16,8 +16,11 @@
 
 #---------------------------------------[Initializations]---------------------------------
 
+# Debug logging
+Start-Transcript -path C:\VMware_Guest_OS_Diskspace_Monitor\output.log -append
+
 # Read config paramaters from config.ini file using PsIni
-$CONFIG = Get-IniContent "config.ini"
+$CONFIG = Get-IniContent "C:\VMware_Guest_OS_Diskspace_Monitor\config.ini"
 
 # Script Version
 $RelaseVersion = $CONFIG["Environment"]["release"]
@@ -119,7 +122,7 @@ Function Syslog($envname,$source,$message,$sev) {
 
 
 Write-Information "Connecting to vCenter..."
-$connection = Connect-VIServer -Server $vcserver -User $vcuser -Password $vcpassword -InvalidCertificateAction Ignore -Confirm:$false
+$connection = Connect-VIServer -Server $vcserver -User $vcuser -Password $vcpassword
 
 if ($connection.IsConnected -eq 'True'){$connection}
 else {
@@ -128,18 +131,18 @@ else {
 }
 
 while($true) {
-  Get-VM -Name vcsa-vlab | ForEach-Object {
-  # Get-VM | ForEach-Object {
+  # Get-VM -Name vcsa-vlab | ForEach-Object {
+  Get-VM | ForEach-Object {
 
     $VM = $_
     $_.Guest.Disks | ForEach-Object {
-      $output = "" | Select-Object -Property VM,Path,Capacity,UsedSpace,FreeSpace,PercentageFreeSpace
+      $output = "" | Select-Object -Property VM,Path,Capacity_GB,UsedSpace_GB,FreeSpace_GB,PercentageFreeSpace
       $output.VM = $VM.Name
       $output.Path = $_.Path
-      $output.Capacity = ($_.Capacity / 1GB)
-      $output.UsedSpace = (($_.Capacity - $_.FreeSpace) / 1GB)
-      $output.FreeSpace = ($_.FreeSpace / 1GB)
-      if ($_.Capacity) {$output.PercentageFreeSpace = [math]::Round(100*($_.FreeSpace/$_.Capacity))}
+      $output.Capacity_GB = ([math]::Round($_.Capacity / 1GB,2))
+      $output.UsedSpace_GB = ([math]::Round(($_.Capacity - $_.FreeSpace) / 1GB,2))
+      $output.FreeSpace_GB = ([math]::Round($_.FreeSpace / 1GB,2))
+      if ($_.Capacity) {$output.PercentageFreeSpace = ([math]::Round(100*($_.FreeSpace/$_.Capacity)))}
       # $output
       if ($output.PercentageFreeSpace) {
           if ($output.PercentageFreeSpace -lt $PercentageFreeSpaceThreshold) {
@@ -149,7 +152,7 @@ while($true) {
               Write-Warning ("Alert Alias: " + $alias)
               Syslog $envname $output.VM $message Alert
               # Opsgenie_Alert $message $alias
-              # $output | Format-Table VM,Path,Capacity,UsedSpace,FreeSpace,PercentageFreeSpace
+              $output | Format-Table VM,Path,Capacity_GB,UsedSpace_GB,FreeSpace_GB,PercentageFreeSpace
           }
       }
     }
@@ -158,3 +161,5 @@ while($true) {
 }
 
 Disconnect-VIServer -Server $vcserver -confirm:$false
+
+Stop-Transcript

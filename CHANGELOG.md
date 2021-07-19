@@ -9,6 +9,17 @@
   - Report function
   - Email function
 
+## [0.5.0] - 2021-07-19
+
+### Added
+
+- Logging to output.log for debugging
+
+
+### Fixed
+
+- Some issues with requirement.ps1
+
 
 ## [0.4.0] - 2021-07-01
 
