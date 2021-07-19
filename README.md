@@ -53,7 +53,7 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
 
 - From Windows command prompt or from task scheduler
 
-    _Note: Running as a service is preferred, if you want to run as a scheduled task, you will need to modify the code to remove the while loop. I may update this to happen automatically in a future release depending on a config.ini setting.
+    _Note: Running as a service is preferred, if you want to run as a scheduled task, you will need to modify the code to remove the while loop. I may update this to happen automatically in a future release depending on a config.ini setting._
     ```Powershell
     start powershell "& "./check_diskspace.ps1"
     ```
