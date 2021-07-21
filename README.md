@@ -5,6 +5,7 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
 ## Requirements
 
 - [Powershell](https://docs.microsoft.com/en-us/powershell/)
+  - _Note: Developed and tested on Windows 10 with Powershell version 5.1.19041.1023, code is likely to work on PSVersion >= 3, but untested.  Based on my experience porting to PS Core on Linux is possible, but will likely require some code modifications._
 - [VMware.PowerCLI](https://www.powershellgallery.com/packages/VMware.PowerCLI)
 - [PsIni](https://www.powershellgallery.com/packages/PsIni/3.1.2)
 - [PSWriteHTML](https://www.powershellgallery.com/packages/PSWriteHTML)
@@ -17,7 +18,7 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
 - Download code from GitHub
     - _Note:  If you don't have Git installed you can also just grab the zip:  https://github.com/CC-Digital-Innovation/vmware_guest_diskspace_mon/archive/master.zip_
 
-    ```sh
+    ```Powershell
     git clone https://github.com/CC-Digital-Innovation/vmware_guest_diskspace_mon.git
     ```
 

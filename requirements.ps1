@@ -1,4 +1,4 @@
-#requires -version 2
+#requires -version 5
 <#
 .SYNOPSIS
   Script to install requirements
@@ -24,7 +24,7 @@
 Install-Module -Confirm:$false -Name PsIni
 
 # Read config paramaters from config.ini file using PsIni
-$CONFIG = Get-IniContent "C:\VMware_Guest_OS_Diskspace_Monitor\config.ini"
+$CONFIG = Get-IniContent "$PSScriptRoot\config.ini"
 
 # Script Version
 $RelaseVersion = $CONFIG["Environment"]["release"]
@@ -42,16 +42,16 @@ function InstallModules {
   foreach ($psm in $ModuleArray) {
     if (Get-Module -ListAvailable -Name $psm) {
       Write-Host ($psm + " is already installed")
-    } 
+    }
     else {
       try {
-          Install-Module -Name $psm -AllowClobber -Confirm:$False -Force  
+        Install-Module -Name $psm -AllowClobber -Confirm:$False -Force
       }
       catch [Exception] {
-          $_.message 
-          exit
+        $_.message
+        exit
       }
-    } 
+    }
   }
 }
 
@@ -60,9 +60,8 @@ function InstallModules {
 
 
 # Check to see if you are running as Administator, if not elevate privledge
-if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))  
-{  
-  $arguments = "& '" +$myinvocation.mycommand.definition + "'"
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {  
+  $arguments = "& '" + $myinvocation.mycommand.definition + "'"
   Start-Process powershell -Verb runAs -ArgumentList $arguments
   Break
 }

@@ -1,4 +1,4 @@
-#requires -version 2
+#requires -version 5
 <#
 .SYNOPSIS
   Helper script to create Windows service
@@ -18,7 +18,7 @@
 
 
 # Read config paramaters from config.ini file using PsIni
-$CONFIG = Get-IniContent "C:\VMware_Guest_OS_Diskspace_Monitor\config.ini"
+$CONFIG = Get-IniContent "$PSScriptRoot\config.ini"
 
 # Script Version
 $RelaseVersion = $CONFIG["Environment"]["release"]

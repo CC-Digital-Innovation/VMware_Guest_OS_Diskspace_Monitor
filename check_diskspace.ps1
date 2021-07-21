@@ -1,4 +1,4 @@
-﻿#requires -version 2
+﻿#requires -version 5
 <#
 .SYNOPSIS
   Script to monitor VM guest volume space and alert on low space
@@ -17,13 +17,13 @@
 #---------------------------------------[Initializations]---------------------------------
 
 # Start logging for debugging
-Start-Transcript -path C:\VMware_Guest_OS_Diskspace_Monitor\output.log -append
+Start-Transcript -path "$PSScriptRoot\output.log" -append
 
 # Import Modules
 Import-Module PSWriteHTML -Force
 
 # Read config paramaters from config.ini file using PsIni
-$CONFIG = Get-IniContent "C:\VMware_Guest_OS_Diskspace_Monitor\config.ini"
+$CONFIG = Get-IniContent "$PSScriptRoot\config.ini"
 
 # Script Version
 $RelaseVersion = $CONFIG["Environment"]["release"]
@@ -132,6 +132,17 @@ function Syslog($envname, $source, $message, $sev) {
   Send-Syslogmessage -Server $SyslogServer -Port $SyslogPort -Message $message -Severity $sev -Facility user -Hostname $envname -ApplicationName $source -Transport UDP
 }
 
+function napTime($seconds) {
+  $doneDT = (Get-Date).AddSeconds($seconds)
+  while($doneDT -gt (Get-Date)) {
+      $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
+      $percent = ($seconds - $secondsLeft) / $seconds * 100
+      Write-Progress -Activity "Sleeping for $seconds seconds" -Status "Sleep Progress..." -SecondsRemaining $secondsLeft -PercentComplete $percent
+      [System.Threading.Thread]::Sleep(500)
+  }
+  Write-Progress -Activity "Sleeping for $seconds seconds" -Status "Sleep Progress..." -SecondsRemaining 0 -Completed
+}
+
 function sendReport ($digest) {
   Email -Supress $false -AttachSelf -AttachSelfName $EmailSubject {
     EmailHeader {
@@ -151,8 +162,8 @@ function sendReport ($digest) {
         ""
         "A table desplaying VMs with disks below the $PercentageFreeSpaceThreshold% free space is embeded and attached to this email."
       }
-      EmailTextBox -FontFamily 'Calibri' -Size 15 -FontStyle italic -FontWeight bold -Color Red{
-      "Note: Downloading the attachment and opening it in your browser will reveal enhanced reporting features."
+      EmailTextBox -FontFamily 'Calibri' -Size 15 -FontStyle italic -FontWeight bold -Color Red {
+        "Note: Downloading the attachment and opening it in your browser will reveal enhanced reporting features."
       }
       EmailText -LineBreak
       EmailTextBox -FontFamily 'Calibri' -Size 15 -TextDecoration underline -Color Black -Alignment center -FontWeight bold {
@@ -221,6 +232,7 @@ while ($true) {
     VM_diskspace
     Disconnect-VIServer -Server $vc -confirm:$false
   }
+  napTime $cycletime
 }
 
 # For debugging

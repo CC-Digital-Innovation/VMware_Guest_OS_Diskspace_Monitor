@@ -12,6 +12,12 @@
 ### Added
 
 - sendReport function to generate and email reports
+- napTime function to visually monitor cycle time
+
+
+### Fixed
+
+- Replaced hard coded path with $PSScriptRoot
 
 
 ## [0.5.0] - 2021-07-19
