@@ -65,6 +65,7 @@ $SyslogPort = $CONFIG["Logging"]["SyslogPort"]
 
 # Email
 $SmtpServer = $CONFIG["Email"]["SmtpServer"]
+$SmtpPort = $CONFIG["Email"]["SmtpPort"]
 $SmtpUsername = $CONFIG["Email"]["Username"]
 $SmtpPassword = $CONFIG["Email"]["Password"]
 $EmailFrom = $CONFIG["Email"]["From"]
@@ -144,14 +145,14 @@ function napTime($seconds) {
 }
 
 function sendReport ($digest) {
-  Email -Supress $false -AttachSelf -AttachSelfName $EmailSubject {
+  Email -AttachSelf -AttachSelfName $EmailSubject {
     EmailHeader {
       EmailFrom -Address $EmailFrom
       EmailReplyTo -Address $EmailReplyTo
       EmailTo -Addresses $EmailTo
       EmailCC -Addresses $EmailCC
       EmailBCC -Addresses $EmailBCC
-      EmailServer -Server $SmtpServer -UserName $SmtpUsername -Password $SmtpPassword -SSL
+      EmailServer -Server $SmtpServer -Port $SmtpPort -UserName $SmtpUsername -Password $SmtpPassword -SSL
       EmailOptions -Priority $EmailPriority
       EmailSubject -Subject $EmailSubject
     }
@@ -186,9 +187,8 @@ function vCenter_Connect ($vc) {
 }
 
 function VM_diskspace {
-  # Get-VM -Name vcsa-vlab | ForEach-Object {
-  Get-VM | ForEach-Object {
-
+  $digest = @()
+    Get-VM | ForEach-Object {
     $VM = $_
     $_.Guest.Disks | ForEach-Object {
       $output = "" | Select-Object -Property VM, Path, Capacity_GB, UsedSpace_GB, FreeSpace_GB, PercentageFreeSpace
@@ -208,16 +208,16 @@ function VM_diskspace {
           Syslog $envname $output.VM $message Alert
           # Opsgenie_Alert $message $alias
           $output | Format-Table VM, Path, Capacity_GB, UsedSpace_GB, FreeSpace_GB, PercentageFreeSpace
-          $digest = @()
           # Add items to tags array
           $digest += @(
             $output
           )
-          sendReport $digest
         }
       }
     }
   }
+  Write-Debug 'Emailing digest report'
+  sendReport $digest
 }
 
 

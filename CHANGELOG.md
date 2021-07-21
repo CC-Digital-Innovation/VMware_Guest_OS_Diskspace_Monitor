@@ -18,6 +18,7 @@
 ### Fixed
 
 - Replaced hard coded path with $PSScriptRoot
+- Email report logic
 
 
 ## [0.5.0] - 2021-07-19
