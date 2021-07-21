@@ -5,9 +5,10 @@ Monitors VMware guest OS disk space and triggers an Opsgenie alert when the avai
 ## Requirements
 
 - [Powershell](https://docs.microsoft.com/en-us/powershell/)
-- [VMware.PowerCLI](https://www.powershellgallery.com/packages/VMware.PowerCLI/12.3.0.17860403)
+- [VMware.PowerCLI](https://www.powershellgallery.com/packages/VMware.PowerCLI)
 - [PsIni](https://www.powershellgallery.com/packages/PsIni/3.1.2)
-- [Posh-Syslog](https://www.powershellgallery.com/packages/Posh-SYSLOG/4.1.5)
+- [PSWriteHTML](https://www.powershellgallery.com/packages/PSWriteHTML)
+- [Posh-Syslog](https://www.powershellgallery.com/packages/Posh-SYSLOG)
 - [Chocolatey](https://chocolatey.org/)
 - [NSSM](https://nssm.cc/download)
 

@@ -7,7 +7,7 @@
 .INPUTS
   None
 .NOTES
-  Version:        0.5.0
+  Version:        0.6.0
   Author:         Rich Bocchinfuso
   Creation Date:  06/29/2021
   Purpose/Change: Initial script development to monitor and alert on VM guest volume free space

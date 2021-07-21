@@ -6,8 +6,13 @@
 
 - TODO
   - Config parameters to enable | disable functions
-  - Report function
-  - Email function
+
+## [0.6.0] - 2021-07-21
+
+### Added
+
+- sendReport function to generate and email reports
+
 
 ## [0.5.0] - 2021-07-19
 

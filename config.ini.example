@@ -50,6 +50,19 @@ InformationPreference=Continue
 SyslogServer=logs.foo.bar
 SyslogPort=514
 
+; Email report details
+[Email]
+SmtpServer=email-smtp.foo.bar
+Username=foo
+Password=bar
+From=noreplyfoo.bar
+To=foo@foo.bar,bar@foo.bar
+CC=
+BCC=
+ReplyTo=noreply@foo.bar
+Subject=VMware Guest OS Disk Space Report
+Priority=Normal
+
 ; Windows service info, required for nssm-helper.ps1
 [NSSM]
 $serviceName = 'SERVICE_NAME'
@@ -57,4 +70,4 @@ $scriptPath = 'X:/path/to/check_diskspace.ps1'
 
 ; Powershell Modules
 [Powershell]
-modules = VMware.PowerCLI,PsIni,Posh-SYSLOG,PSWriteHTML,Emailimo
+modules = VMware.PowerCLI,PsIni,Posh-SYSLOG,PSWriteHTML

@@ -2,6 +2,8 @@
 *.ini
 # ignore log files
 *.log
+# passowrd files
+*.pwd
 # ignore backup files
 *.bak*
 *.backup
